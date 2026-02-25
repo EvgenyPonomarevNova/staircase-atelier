@@ -6,6 +6,8 @@
     <title>Ателье лестниц — производство и обшивка</title>
     <!-- Подключаем Swiper для карусели отзывов -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Подключаем AOS для анимаций -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         /* ===== СБРОС И БАЗОВЫЕ НАСТРОЙКИ ===== */
         * {
@@ -25,6 +27,7 @@
             line-height: 1.4;
             font-weight: 300;
             font-size: 18px;
+            overflow-x: hidden;
         }
 
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -95,7 +98,7 @@
             --border-light: #e0e0e0;
         }
 
-        /* ===== ХЕДЕР ===== */
+        /* ===== ХЕДЕР С АНИМАЦИЕЙ ===== */
         .header {
             position: fixed;
             top: 0;
@@ -105,13 +108,17 @@
             padding: 20px 0;
             color: #ffffff;
             background: transparent;
-            transition: background 0.3s;
+            transition: background 0.3s, padding 0.3s, transform 0.3s;
         }
 
         .header.scrolled {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
-            padding: 15px 0;
+            padding: 12px 0;
+        }
+
+        .header.hidden {
+            transform: translateY(-100%);
         }
 
         .header .container {
@@ -127,6 +134,11 @@
             font-weight: 300;
             text-decoration: none;
             color: currentColor;
+            transition: letter-spacing 0.3s;
+        }
+
+        .logo:hover {
+            letter-spacing: 0.2em;
         }
 
         .nav {
@@ -142,10 +154,28 @@
             text-transform: uppercase;
             font-weight: 300;
             transition: opacity 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        /* Анимация полосы при наведении */
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav a:hover::after {
+            width: 100%;
         }
 
         .nav a:hover {
-            opacity: 0.7;
+            opacity: 1;
         }
 
         .header-phone {
@@ -153,6 +183,24 @@
             letter-spacing: 0.05em;
             text-decoration: none;
             color: currentColor;
+            transition: color 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .header-phone::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .header-phone:hover::after {
+            width: 100%;
         }
 
         /* ===== ГЕРОЙ (ПЕРВЫЙ ЭКРАН) ===== */
@@ -177,6 +225,16 @@
             background-repeat: no-repeat;
             will-change: transform;
             z-index: -2;
+            animation: heroZoom 8s ease-out forwards;
+        }
+
+        @keyframes heroZoom {
+            0% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         .hero::after {
@@ -186,7 +244,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
             z-index: -1;
         }
 
@@ -195,6 +253,18 @@
             z-index: 2;
             padding-bottom: 120px;
             max-width: 800px;
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero-suptitle {
@@ -204,6 +274,7 @@
             margin-bottom: 1.5rem;
             color: var(--accent);
             font-weight: 400;
+            animation: fadeIn 1s ease-out 0.3s both;
         }
 
         .hero p {
@@ -213,6 +284,7 @@
             opacity: 0.9;
             font-weight: 300;
             color: #ffffff;
+            animation: fadeIn 1s ease-out 0.5s both;
         }
 
         .hero-btn {
@@ -226,17 +298,40 @@
             font-size: 0.85rem;
             transition: all 0.4s;
             background: transparent;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: fadeIn 1s ease-out 0.7s both;
+        }
+
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: left 0.4s;
+            z-index: -1;
+        }
+
+        .hero-btn:hover::before {
+            left: 0;
         }
 
         .hero-btn:hover {
-            background: var(--accent);
             color: #1a1a1a;
+            border-color: var(--accent);
         }
 
-        /* Эффект параллакса для фона */
-        .parallax {
-            transform: translateY(var(--parallax-offset, 0));
-            transition: transform 0.1s ease-out;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         /* ===== СЕКЦИЯ О НАС ===== */
@@ -257,6 +352,12 @@
             color: #4a4a4a;
             font-size: 1.2rem;
             line-height: 1.6;
+            transition: transform 0.3s;
+        }
+
+        .about-text p:hover {
+            transform: translateX(5px);
+            color: #1e1e1e;
         }
 
         .about-highlight {
@@ -264,6 +365,11 @@
             font-weight: 300;
             color: #1e1e1e !important;
             line-height: 1.4 !important;
+            transition: color 0.3s;
+        }
+
+        .about-highlight:hover {
+            color: var(--accent) !important;
         }
 
         /* ===== СЕТКА УСЛУГ ===== */
@@ -280,37 +386,161 @@
         }
 
         .service-card {
-            padding: 40px 30px;
-            background: #ffffff;
-            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            padding: 280px 30px 40px 30px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: transform 0.4s, box-shadow 0.4s;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+            color: #ffffff;
+            overflow: hidden;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            cursor: pointer;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+            z-index: 1;
+            transition: opacity 0.3s;
         }
 
         .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.4);
         }
 
-        .service-icon {
-            height: 70px;
-            width: 70px;
-            margin: 0 auto 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .service-card:hover::before {
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 100%);
         }
 
-        .service-icon img {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
+        .service-card h3,
+        .service-card p {
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover h3 {
+            transform: translateY(-5px);
+        }
+
+        .service-card:hover p {
+            transform: translateY(-3px);
         }
 
         .service-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
             font-weight: 300;
+            color: #ffffff;
+        }
+
+        .service-card p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Индивидуальные фоны для карточек */
+        .service-card:nth-child(1) {
+            background-image: url('./img/icon1.png');
+        }
+        .service-card:nth-child(2) {
+            background-image: url('./img/icon2.png');
+        }
+        .service-card:nth-child(3) {
+            background-image: url('./img/icon3.png');
+        }
+
+        /* ===== БЛОК СВЯЖИТЕСЬ С НАМИ ===== */
+        .contact-cta {
+            padding: 100px 0 0;
+            background: #f5f5f5;
+        }
+
+        .cta-block {
+            background: #1a1a1a;
+            padding: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin-top: 60px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+        }
+
+        .cta-content {
+            max-width: 60%;
+        }
+
+        .cta-content h3 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            transition: color 0.3s;
+        }
+
+        .cta-block:hover .cta-content h3 {
+            color: var(--accent);
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 18px 54px;
+            border: 1px solid var(--accent);
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: all 0.4s;
+            background: transparent;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: left 0.4s;
+            z-index: -1;
+        }
+
+        .cta-btn:hover::before {
+            left: 0;
+        }
+
+        .cta-btn:hover {
+            color: #1a1a1a;
         }
 
         /* ===== ПРЕИМУЩЕСТВА ===== */
@@ -330,6 +560,12 @@
         .advantage-item {
             border-top: 1px solid rgba(255,255,255,0.1);
             padding-top: 40px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .advantage-item:hover {
+            transform: translateY(-5px);
+            border-top-color: var(--accent);
         }
 
         .advantage-number {
@@ -337,6 +573,11 @@
             color: var(--accent);
             letter-spacing: 0.2em;
             margin-bottom: 1.5rem;
+            transition: letter-spacing 0.3s;
+        }
+
+        .advantage-item:hover .advantage-number {
+            letter-spacing: 0.3em;
         }
 
         .advantage-item h3 {
@@ -354,12 +595,25 @@
             padding: 60px 40px;
             border: 1px solid rgba(255,255,255,0.1);
             background: rgba(255,255,255,0.02);
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .quote-block:hover {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.05);
+            transform: scale(1.02);
         }
 
         .quote-block p {
             font-size: 1.8rem;
             font-weight: 300;
             color: #ffffff;
+            transition: color 0.3s;
+        }
+
+        .quote-block:hover p {
+            color: var(--accent);
         }
 
         /* ===== ПОРТФОЛИО ===== */
@@ -388,11 +642,17 @@
             overflow: hidden;
             aspect-ratio: 4/5;
             cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.02);
+            z-index: 2;
         }
 
         .portfolio-item img {
             width: 100%;
-            height: 100%;
+            height: 90%;
             object-fit: cover;
             transition: transform 0.8s;
         }
@@ -469,6 +729,12 @@
             height: auto;
             box-shadow: 0 15px 30px rgba(0,0,0,0.05);
             border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
         }
 
         .review-text {
@@ -476,11 +742,21 @@
             font-style: italic;
             margin-bottom: 2rem;
             color: #4a4a4a;
+            transition: color 0.3s;
+        }
+
+        .review-card:hover .review-text {
+            color: #1e1e1e;
         }
 
         .review-author {
             font-weight: 400;
             color: var(--accent);
+            transition: letter-spacing 0.3s;
+        }
+
+        .review-card:hover .review-author {
+            letter-spacing: 0.05em;
         }
 
         /* ===== КОНТАКТЫ ===== */
@@ -497,6 +773,11 @@
 
         .contact-item {
             margin-bottom: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
         }
 
         .contact-label {
@@ -505,6 +786,11 @@
             letter-spacing: 0.2em;
             color: var(--accent);
             margin-bottom: 0.5rem;
+            transition: letter-spacing 0.3s;
+        }
+
+        .contact-item:hover .contact-label {
+            letter-spacing: 0.3em;
         }
 
         .contact-value {
@@ -512,6 +798,11 @@
             font-weight: 300;
             text-decoration: none;
             color: var(--text-dark);
+            transition: color 0.3s;
+        }
+
+        .contact-item:hover .contact-value {
+            color: var(--accent);
         }
 
         .contact-form input,
@@ -523,11 +814,18 @@
             border-bottom: 1px solid #e0e0e0;
             font-size: 1.1rem;
             margin-bottom: 30px;
+            transition: border-color 0.3s, transform 0.3s;
         }
 
         .contact-form input:focus,
         .contact-form textarea:focus {
             outline: none;
+            border-bottom-color: var(--accent);
+            transform: scale(1.02);
+        }
+
+        .contact-form input:hover,
+        .contact-form textarea:hover {
             border-bottom-color: var(--accent);
         }
 
@@ -541,10 +839,28 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
             transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .contact-form button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: left 0.4s;
+            z-index: -1;
+        }
+
+        .contact-form button:hover::before {
+            left: 0;
         }
 
         .contact-form button:hover {
-            background: var(--accent);
             color: white;
         }
 
@@ -552,6 +868,11 @@
         .map {
             height: 500px;
             width: 100%;
+            transition: opacity 0.3s;
+        }
+
+        .map:hover {
+            opacity: 0.95;
         }
 
         /* ===== ФУТЕР ===== */
@@ -567,6 +888,14 @@
             align-items: center;
         }
 
+        .footer div {
+            transition: color 0.3s;
+        }
+
+        .footer div:hover {
+            color: var(--accent);
+        }
+
         /* ===== МОДАЛКА ===== */
         .modal {
             display: none;
@@ -579,6 +908,16 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .modal.active {
@@ -589,6 +928,18 @@
             position: relative;
             max-width: 90vw;
             max-height: 90vh;
+            animation: modalZoom 0.3s;
+        }
+
+        @keyframes modalZoom {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .modal-content img {
@@ -607,6 +958,12 @@
             background: none;
             border: none;
             padding: 10px;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: var(--accent);
         }
 
         .modal-nav {
@@ -620,11 +977,12 @@
             border: none;
             padding: 20px 15px;
             border-radius: 4px;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.3s;
         }
 
         .modal-nav:hover {
             background: rgba(0,0,0,0.8);
+            transform: translateY(-50%) scale(1.1);
         }
 
         .modal-prev {
@@ -650,6 +1008,17 @@
 
             .reviews h2 {
                 padding-left: 40px;
+            }
+
+            .cta-block {
+                flex-direction: column;
+                text-align: center;
+                padding: 60px 40px;
+            }
+
+            .cta-content {
+                max-width: 100%;
+                margin-bottom: 40px;
             }
         }
 
@@ -677,6 +1046,14 @@
                 font-size: 0.8rem;
                 letter-spacing: 0.3em;
             }
+
+            .cta-block {
+                padding: 40px 24px;
+            }
+
+            .cta-content h3 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -688,6 +1065,7 @@
             <a href="#" class="logo">лестницы.про</a>
             <nav class="nav">
                 <a href="#about">о нас</a>
+                <a href="#services">услуги</a>
                 <a href="#portfolio">работы</a>
                 <a href="#reviews">отзывы</a>
                 <a href="#contacts">контакты</a>
@@ -711,11 +1089,11 @@
     <section id="about" class="about">
         <div class="container">
             <div class="about-grid">
-                <div>
+                <div data-aos="fade-right" data-aos-duration="1000">
                     <h2>О нашей компании</h2>
                     <p class="about-highlight">Мы создаём лестницы, которые становятся сердцем дома.</p>
                 </div>
-                <div class="about-text">
+                <div class="about-text" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
                     <p>Наша компания специализируется на производстве лестниц и их профессиональной обшивке деревом и плиткой. Мы предлагаем комплексные решения, сочетающие функциональность, надежность и эстетическую привлекательность.</p>
                     <p>Работаем с ценными породами дерева — дубом, ясенем, орехом. Используем современные технологии и традиционное мастерство.</p>
                 </div>
@@ -724,25 +1102,35 @@
     </section>
 
     <!-- ЧТО МЫ ДЕЛАЕМ -->
-    <section class="services">
+    <section id="services" class="services">
         <div class="container">
-            <h2>Что мы делаем</h2>
+            <h2 data-aos="fade-up" data-aos-duration="1000">Что мы делаем</h2>
             <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon"><img src="./img/icon1.png" alt=""></div>
+                <div class="service-card" data-aos="flip-left" data-aos-duration="1000" data-aos-delay="100">
                     <h3>Производство лестниц</h3>
-                    <p>Любой сложности — от классических маршей до сложных винтовых конструкций.</p>
+                    <p>Любой сложности — от классических маршей до сложных винтовых конструкций. Используем только лучшие породы дерева.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon"><img src="./img/icon2.png" alt=""></div>
+                <div class="service-card" data-aos="flip-left" data-aos-duration="1000" data-aos-delay="300">
                     <h3>Обшивка деревом</h3>
-                    <p>Преображение существующих лестниц натуральным деревом.</p>
+                    <p>Преображение существующих лестниц натуральным деревом. Работаем с дубом, ясенем, орехом и другими ценными породами.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon"><img src="./img/icon3.png" alt=""></div>
+                <div class="service-card" data-aos="flip-left" data-aos-duration="1000" data-aos-delay="500">
                     <h3>Обшивка плиткой</h3>
-                    <p>Керамическая плитка и камень для долговечности и стиля.</p>
+                    <p>Керамическая плитка и натуральный камень для долговечности и стиля. Широкий выбор фактур и цветовых решений.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- БЛОК СВЯЖИТЕСЬ С НАМИ -->
+    <section class="contact-cta">
+        <div class="container">
+            <div class="cta-block" data-aos="zoom-in" data-aos-duration="1200">
+                <div class="cta-content">
+                    <h3>Свяжитесь с нами</h3>
+                    <p>Готовы обсудить ваш проект? Приезжайте в нашу мастерскую посмотреть образцы. Мы с радостью ответим на все вопросы и поможем воплотить вашу идею в жизнь.</p>
+                </div>
+                <a href="#contacts" class="cta-btn">Заказать</a>
             </div>
         </div>
     </section>
@@ -750,25 +1138,25 @@
     <!-- ПРЕИМУЩЕСТВА (темная секция) -->
     <section class="advantages">
         <div class="container">
-            <h2 class="light">Почему мы</h2>
+            <h2 class="light" data-aos="fade-up" data-aos-duration="1000">Почему мы</h2>
             <div class="advantages-grid">
-                <div class="advantage-item">
+                <div class="advantage-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
                     <div class="advantage-number">01</div>
                     <h3>Опытная команда</h3>
                     <p>Мастера с многолетним стажем, внимательные к деталям.</p>
                 </div>
-                <div class="advantage-item">
+                <div class="advantage-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
                     <div class="advantage-number">02</div>
                     <h3>Индивидуальный дизайн</h3>
                     <p>Разрабатываем проект специально под ваш интерьер.</p>
                 </div>
-                <div class="advantage-item">
+                <div class="advantage-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
                     <div class="advantage-number">03</div>
                     <h3>Гарантия качества</h3>
                     <p>Соблюдаем сроки и отвечаем за результат.</p>
                 </div>
             </div>
-            <div class="quote-block">
+            <div class="quote-block" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="600">
                 <p>«Выбирая нас, вы получаете не просто лестницу, а стильное, прочное и безопасное изделие, идеально вписывающееся в интерьер»</p>
             </div>
         </div>
@@ -777,7 +1165,7 @@
     <!-- ПОРТФОЛИО -->
     <section id="portfolio" class="portfolio">
         <div class="container">
-            <h2>Наши работы</h2>
+            <h2 data-aos="fade-up" data-aos-duration="1000">Наши работы</h2>
             <div class="portfolio-grid" id="portfolioGrid"></div>
         </div>
     </section>
@@ -785,42 +1173,42 @@
     <!-- ОТЗЫВЫ с бесконечной каруселью -->
     <section id="reviews" class="reviews">
         <div class="container">
-            <h2>Отзывы</h2>
+            <h2 data-aos="fade-up" data-aos-duration="1000">Отзывы</h2>
         </div>
         <div class="swiper reviews-slider">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <div class="review-card">
+                    <div class="review-card" data-aos="fade-up" data-aos-duration="800">
                         <div class="review-text">«Сделали лестницу на второй этаж. Очень довольны качеством дерева и работой мастеров. Все четко и в срок.»</div>
                         <div class="review-author">Анна, Москва</div>
                     </div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="review-card">
+                    <div class="review-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
                         <div class="review-text">«Заказывали обшивку плиткой существующей лестницы. Преобразили дом до неузнаваемости!»</div>
                         <div class="review-author">Дмитрий, Воскресенск</div>
                     </div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="review-card">
+                    <div class="review-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
                         <div class="review-text">«Профессиональный подход к дизайну. Помогли выбрать стиль под интерьер. Рекомендую.»</div>
                         <div class="review-author">Елена, Москва</div>
                     </div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="review-card">
+                    <div class="review-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
                         <div class="review-text">«Очень довольны результатом! Лестница стала украшением дома. Спасибо за качество и терпение.»</div>
                         <div class="review-author">Михаил, Московская обл.</div>
                     </div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="review-card">
+                    <div class="review-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
                         <div class="review-text">«Отличная работа! Все сделано качественно, в срок. Обязательно обратимся еще.»</div>
                         <div class="review-author">Ольга, Москва</div>
                     </div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="review-card">
+                    <div class="review-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="500">
                         <div class="review-text">«Ребята настоящие профессионалы! Учли все пожелания, результат превзошел ожидания.»</div>
                         <div class="review-author">Алексей, Воскресенск</div>
                     </div>
@@ -833,7 +1221,7 @@
     <section id="contacts" class="contacts">
         <div class="container">
             <div class="contacts-grid">
-                <div>
+                <div data-aos="fade-right" data-aos-duration="1000">
                     <h2>Контакты</h2>
                     <div class="contact-item">
                         <div class="contact-label">телефон</div>
@@ -852,7 +1240,7 @@
                         <div class="contact-value">ул. Андреса, д.38</div>
                     </div>
                 </div>
-                <div>
+                <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
                     <form class="contact-form">
                         <input type="text" placeholder="имя" required>
                         <input type="tel" placeholder="телефон" required>
@@ -884,10 +1272,19 @@
         </div>
     </div>
 
-    <!-- Подключаем Swiper и Яндекс.Карты -->
+    <!-- Подключаем Swiper, AOS и Яндекс.Карты -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш-ключ&lang=ru_RU" type="text/javascript"></script>
     <script>
+        // Инициализация AOS
+        AOS.init({
+            once: true,
+            mirror: false,
+            duration: 1000,
+            easing: 'ease-out'
+        });
+
         // Генерация портфолио (10 работ)
         const portfolioGrid = document.getElementById('portfolioGrid');
         if (portfolioGrid) {
@@ -923,6 +1320,9 @@
                     const item = document.createElement('div');
                     item.className = 'portfolio-item';
                     item.dataset.index = index;
+                    item.setAttribute('data-aos', 'fade-up');
+                    item.setAttribute('data-aos-duration', '800');
+                    item.setAttribute('data-aos-delay', index * 100);
                     item.innerHTML = `
                         <img src="img/${photoFile}" alt="${captions[index]}" loading="lazy">
                         <div class="portfolio-overlay">
@@ -947,6 +1347,7 @@
                 const img = items[currentIndex].querySelector('img');
                 modalImg.src = img.src;
                 modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
 
             items.forEach((item, index) => {
@@ -955,6 +1356,7 @@
 
             closeBtn.addEventListener('click', () => {
                 modal.classList.remove('active');
+                document.body.style.overflow = '';
             });
 
             prevBtn.addEventListener('click', () => {
@@ -972,6 +1374,7 @@
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.classList.remove('active');
+                    document.body.style.overflow = '';
                 }
             });
 
@@ -1035,7 +1438,7 @@
         }
 
         // Плавный скролл
-        document.querySelectorAll('.nav a, .hero-btn').forEach(anchor => {
+        document.querySelectorAll('.nav a, .hero-btn, .cta-btn').forEach(anchor => {
             anchor.addEventListener('click', (e) => {
                 const href = anchor.getAttribute('href');
                 if (href && href.startsWith('#')) {
@@ -1049,13 +1452,24 @@
         });
 
         // Изменение хедера при скролле
+        let lastScrollTop = 0;
         window.addEventListener('scroll', () => {
             const header = document.getElementById('header');
-            if (window.scrollY > 50) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
+            
+            // Скрываем/показываем хедер при скролле
+            if (scrollTop > lastScrollTop && scrollTop > 200) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop;
         });
 
         // Яндекс.Карта (Москва, ул. Промышленная, д.3)
