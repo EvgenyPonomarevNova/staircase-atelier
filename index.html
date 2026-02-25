@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ателье лестниц — производство и обшивка</title>
+    <!-- Подключаем Swiper для карусели отзывов -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        /* ===== СБРОС И БАЗОВЫЕ НАСТРОЙКИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Gilroy', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+            background-color: #f5f5f5;
+            color: #1e1e1e;
+            line-height: 1.4;
+            font-weight: 300;
+            font-size: 18px;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        h1, h2, h3, .logo {
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            color: #ffffff;
+        }
+
+        h2 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 1px;
+            background-color: #c49a6c;
+            margin: 1.5rem 0 0;
+        }
+
+        h2.light::after {
+            background-color: #c49a6c;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 80px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 24px;
+            }
+            
+            body {
+                font-size: 16px;
+            }
+        }
+
+        /* ===== ТИПОГРАФИКА И ЦВЕТА ===== */
+        :root {
+            --accent: #c49a6c;      /* теплый золотисто-коричневый */
+            --accent-dark: #a0784c;  /* темнее для ховеров */
+            --bg-dark: #1a1a1a;      /* темный фон */
+            --bg-light: #fafafa;     /* светлый фон (почти белый) */
+            --text-dark: #1e1e1e;
+            --text-light: #ffffff;
+            --border-light: #e0e0e0;
+        }
+
+        /* ===== ХЕДЕР ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 0;
+            color: #ffffff;
+            background: transparent;
+            transition: background 0.3s;
+        }
+
+        .header.scrolled {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 300;
+            text-decoration: none;
+            color: currentColor;
+        }
+
+        .nav {
+            display: flex;
+            gap: 48px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: currentColor;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 300;
+            transition: opacity 0.3s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        .header-phone {
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            color: currentColor;
+        }
+
+        /* ===== ГЕРОЙ (ПЕРВЫЙ ЭКРАН) ===== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url(./img/bagr2.png);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            will-change: transform;
+            z-index: -2;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding-bottom: 120px;
+            max-width: 800px;
+        }
+
+        .hero-suptitle {
+            font-size: 1rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            font-weight: 300;
+            color: #ffffff;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 16px 42px;
+            border: 1px solid var(--accent);
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.4s;
+            background: transparent;
+        }
+
+        .hero-btn:hover {
+            background: var(--accent);
+            color: #1a1a1a;
+        }
+
+        /* Эффект параллакса для фона */
+        .parallax {
+            transform: translateY(var(--parallax-offset, 0));
+            transition: transform 0.1s ease-out;
+        }
+
+        /* ===== СЕКЦИЯ О НАС ===== */
+        .about {
+            padding: 140px 0;
+            background: #ffffff;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .about-text p {
+            margin-bottom: 2rem;
+            color: #4a4a4a;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .about-highlight {
+            font-size: 1.8rem !important;
+            font-weight: 300;
+            color: #1e1e1e !important;
+            line-height: 1.4 !important;
+        }
+
+        /* ===== СЕТКА УСЛУГ ===== */
+        .services {
+            padding: 100px 0;
+            background: #f5f5f5;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .service-card {
+            padding: 40px 30px;
+            background: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .service-icon {
+            height: 70px;
+            width: 70px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-icon img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        /* ===== ПРЕИМУЩЕСТВА ===== */
+        .advantages {
+            padding: 140px 0;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin-top: 60px;
+        }
+
+        .advantage-item {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+        }
+
+        .advantage-number {
+            font-size: 1rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+        }
+
+        .advantage-item h3 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .advantage-item p {
+            color: #b0b0b0;
+        }
+
+        .quote-block {
+            margin-top: 100px;
+            padding: 60px 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .quote-block p {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #ffffff;
+        }
+
+        /* ===== ПОРТФОЛИО ===== */
+        .portfolio {
+            padding: 140px 0;
+            background: #1a1a1a;
+        }
+
+        .portfolio h2 {
+            color: white;
+        }
+
+        .portfolio h2::after {
+            background-color: var(--accent);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 60px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            cursor: pointer;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s;
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        .portfolio-caption {
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+            transform: translateY(20px);
+            transition: transform 0.4s;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .portfolio-item:hover .portfolio-caption {
+            transform: translateY(0);
+        }
+
+        /* ===== ОТЗЫВЫ ===== */
+        .reviews {
+            padding: 140px 0;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .reviews .container {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .reviews h2 {
+            padding-left: 80px;
+            margin-bottom: 3rem;
+            color: #1e1e1e;
+        }
+
+        .reviews-slider {
+            overflow: visible;
+        }
+
+        .swiper-wrapper {
+            transition-timing-function: linear;
+        }
+
+        .review-card {
+            background: #ffffff;
+            padding: 48px;
+            border-radius: 0;
+            height: auto;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            border: none;
+        }
+
+        .review-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 2rem;
+            color: #4a4a4a;
+        }
+
+        .review-author {
+            font-weight: 400;
+            color: var(--accent);
+        }
+
+        /* ===== КОНТАКТЫ ===== */
+        .contacts {
+            padding: 140px 0;
+            background: #ffffff;
+        }
+
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+        }
+
+        .contact-item {
+            margin-bottom: 2rem;
+        }
+
+        .contact-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-size: 1.6rem;
+            font-weight: 300;
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 18px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
+
+        .contact-form button {
+            padding: 18px 48px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.4s;
+        }
+
+        .contact-form button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* ===== КАРТА ===== */
+        .map {
+            height: 500px;
+            width: 100%;
+        }
+
+        /* ===== ФУТЕР ===== */
+        .footer {
+            padding: 60px 0;
+            background: #1a1a1a;
+            color: #999;
+        }
+
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ===== МОДАЛКА ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .modal-content img {
+            max-height: 90vh;
+            max-width: 90vw;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            padding: 20px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .modal-nav:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .modal-prev {
+            left: 20px;
+        }
+
+        .modal-next {
+            right: 20px;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 1024px) {
+            .services-grid,
+            .advantages-grid,
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .reviews h2 {
+                padding-left: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+            
+            .services-grid,
+            .advantages-grid,
+            .portfolio-grid,
+            .contacts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+
+            .reviews h2 {
+                padding-left: 24px;
+            }
+
+            .hero-suptitle {
+                font-size: 0.8rem;
+                letter-spacing: 0.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ХЕДЕР -->
+    <header class="header" id="header">
+        <div class="container">
+            <a href="#" class="logo">лестницы.про</a>
+            <nav class="nav">
+                <a href="#about">о нас</a>
+                <a href="#portfolio">работы</a>
+                <a href="#reviews">отзывы</a>
+                <a href="#contacts">контакты</a>
+            </nav>
+            <a href="tel:+79991234567" class="header-phone">+7 999 123 45 67</a>
+        </div>
+    </header>
+
+    <!-- ГЕРОЙ (первый экран) -->
+    <section class="hero">
+        <div class="hero-bg parallax" id="heroBg"></div>
+        <div class="container hero-content">
+            <div class="hero-suptitle">АТЕЛЬЕ ЛЕСТНИЦ</div>
+            <h1>лестницы,<br>в которых<br>хочется жить</h1>
+            <p>Производство и обшивка деревом и плиткой. Индивидуальные проекты для дома и офиса.</p>
+            <a href="#portfolio" class="hero-btn">смотреть работы</a>
+        </div>
+    </section>
+
+    <!-- О НАС -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-grid">
+                <div>
+                    <h2>О нашей компании</h2>
+                    <p class="about-highlight">Мы создаём лестницы, которые становятся сердцем дома.</p>
+                </div>
+                <div class="about-text">
+                    <p>Наша компания специализируется на производстве лестниц и их профессиональной обшивке деревом и плиткой. Мы предлагаем комплексные решения, сочетающие функциональность, надежность и эстетическую привлекательность.</p>
+                    <p>Работаем с ценными породами дерева — дубом, ясенем, орехом. Используем современные технологии и традиционное мастерство.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ЧТО МЫ ДЕЛАЕМ -->
+    <section class="services">
+        <div class="container">
+            <h2>Что мы делаем</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><img src="./img/icon1.png" alt=""></div>
+                    <h3>Производство лестниц</h3>
+                    <p>Любой сложности — от классических маршей до сложных винтовых конструкций.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><img src="./img/icon2.png" alt=""></div>
+                    <h3>Обшивка деревом</h3>
+                    <p>Преображение существующих лестниц натуральным деревом.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><img src="./img/icon3.png" alt=""></div>
+                    <h3>Обшивка плиткой</h3>
+                    <p>Керамическая плитка и камень для долговечности и стиля.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ПРЕИМУЩЕСТВА (темная секция) -->
+    <section class="advantages">
+        <div class="container">
+            <h2 class="light">Почему мы</h2>
+            <div class="advantages-grid">
+                <div class="advantage-item">
+                    <div class="advantage-number">01</div>
+                    <h3>Опытная команда</h3>
+                    <p>Мастера с многолетним стажем, внимательные к деталям.</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-number">02</div>
+                    <h3>Индивидуальный дизайн</h3>
+                    <p>Разрабатываем проект специально под ваш интерьер.</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-number">03</div>
+                    <h3>Гарантия качества</h3>
+                    <p>Соблюдаем сроки и отвечаем за результат.</p>
+                </div>
+            </div>
+            <div class="quote-block">
+                <p>«Выбирая нас, вы получаете не просто лестницу, а стильное, прочное и безопасное изделие, идеально вписывающееся в интерьер»</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ПОРТФОЛИО -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2>Наши работы</h2>
+            <div class="portfolio-grid" id="portfolioGrid"></div>
+        </div>
+    </section>
+
+    <!-- ОТЗЫВЫ с бесконечной каруселью -->
+    <section id="reviews" class="reviews">
+        <div class="container">
+            <h2>Отзывы</h2>
+        </div>
+        <div class="swiper reviews-slider">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-text">«Сделали лестницу на второй этаж. Очень довольны качеством дерева и работой мастеров. Все четко и в срок.»</div>
+                        <div class="review-author">Анна, Москва</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-text">«Заказывали обшивку плиткой существующей лестницы. Преобразили дом до неузнаваемости!»</div>
+                        <div class="review-author">Дмитрий, Воскресенск</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-text">«Профессиональный подход к дизайну. Помогли выбрать стиль под интерьер. Рекомендую.»</div>
+                        <div class="review-author">Елена, Москва</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-text">«Очень довольны результатом! Лестница стала украшением дома. Спасибо за качество и терпение.»</div>
+                        <div class="review-author">Михаил, Московская обл.</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-text">«Отличная работа! Все сделано качественно, в срок. Обязательно обратимся еще.»</div>
+                        <div class="review-author">Ольга, Москва</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-text">«Ребята настоящие профессионалы! Учли все пожелания, результат превзошел ожидания.»</div>
+                        <div class="review-author">Алексей, Воскресенск</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- КОНТАКТЫ -->
+    <section id="contacts" class="contacts">
+        <div class="container">
+            <div class="contacts-grid">
+                <div>
+                    <h2>Контакты</h2>
+                    <div class="contact-item">
+                        <div class="contact-label">телефон</div>
+                        <a href="tel:+79991234567" class="contact-value">+7 999 123 45 67</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">email</div>
+                        <a href="mailto:info@staircase.pro" class="contact-value">info@staircase.pro</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">москва</div>
+                        <div class="contact-value">ул. Промышленная, д.3</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">воскресенск</div>
+                        <div class="contact-value">ул. Андреса, д.38</div>
+                    </div>
+                </div>
+                <div>
+                    <form class="contact-form">
+                        <input type="text" placeholder="имя" required>
+                        <input type="tel" placeholder="телефон" required>
+                        <button type="submit">отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- КАРТА с Яндекс.Картами -->
+    <div id="map" class="map"></div>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="container">
+            <div>© 2026 лестницы.про</div>
+            <div>все права защищены</div>
+        </div>
+    </footer>
+
+    <!-- МОДАЛКА ДЛЯ ПОРТФОЛИО -->
+    <div class="modal" id="modal">
+        <span class="modal-close">&times;</span>
+        <button class="modal-nav modal-prev">←</button>
+        <button class="modal-nav modal-next">→</button>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <!-- Подключаем Swiper и Яндекс.Карты -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш-ключ&lang=ru_RU" type="text/javascript"></script>
+    <script>
+        // Генерация портфолио (10 работ)
+        const portfolioGrid = document.getElementById('portfolioGrid');
+        if (portfolioGrid) {
+            const myPhotos = [
+                'lestnica-1.jpg',
+                'lestnica-2.jpg',
+                'lestnica-3.jpg',
+                'lestnica-4.jpg',
+                'lestnica-5.jpg',
+                'lestnica-6.jpg',
+                'lestnica-7.jpg',
+                'lestnica-8.jpg',
+                'lestnica-9.jpg',
+                'lestnica-10.jpg'
+            ];
+            
+            const captions = [
+                'Лестница с белыми перилами',
+                'Лестница зеркальная',
+                'Лестница из дуба',
+                'Обшивка плиткой',
+                'Марш из ясеня',
+                'Лестница на заказ',
+                'Кованые перила',
+                'Современная лестница',
+                'Классический стиль',
+                'Обшивка деревом'
+            ];
+
+            // Создаем карточки для каждого фото
+            myPhotos.forEach((photoFile, index) => {
+                if (index < 10) {
+                    const item = document.createElement('div');
+                    item.className = 'portfolio-item';
+                    item.dataset.index = index;
+                    item.innerHTML = `
+                        <img src="img/${photoFile}" alt="${captions[index]}" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-caption">${captions[index]}</div>
+                        </div>
+                    `;
+                    portfolioGrid.appendChild(item);
+                }
+            });
+
+            // Модалка с навигацией
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.modal-close');
+            const prevBtn = document.querySelector('.modal-prev');
+            const nextBtn = document.querySelector('.modal-next');
+            let currentIndex = 0;
+            const items = document.querySelectorAll('.portfolio-item');
+
+            function openModal(index) {
+                currentIndex = index;
+                const img = items[currentIndex].querySelector('img');
+                modalImg.src = img.src;
+                modal.classList.add('active');
+            }
+
+            items.forEach((item, index) => {
+                item.addEventListener('click', () => openModal(index));
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + items.length) % items.length;
+                const img = items[currentIndex].querySelector('img');
+                modalImg.src = img.src;
+            });
+
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % items.length;
+                const img = items[currentIndex].querySelector('img');
+                modalImg.src = img.src;
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Поддержка тач-свайпов для модалки на мобильных
+            let touchstartX = 0;
+            modal.addEventListener('touchstart', (e) => {
+                touchstartX = e.changedTouches[0].screenX;
+            });
+
+            modal.addEventListener('touchend', (e) => {
+                const touchendX = e.changedTouches[0].screenX;
+                if (touchendX < touchstartX - 50) {
+                    // свайп влево - следующее фото
+                    currentIndex = (currentIndex + 1) % items.length;
+                    const img = items[currentIndex].querySelector('img');
+                    modalImg.src = img.src;
+                } else if (touchendX > touchstartX + 50) {
+                    // свайп вправо - предыдущее фото
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    const img = items[currentIndex].querySelector('img');
+                    modalImg.src = img.src;
+                }
+            });
+        }
+
+        // Карусель отзывов (бесконечная, автопрокрутка)
+        const swiper = new Swiper('.reviews-slider', {
+            slidesPerView: 'auto',
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 0,
+                disableOnInteraction: false,
+            },
+            speed: 8000,
+            allowTouchMove: true,
+            breakpoints: {
+                320: {
+                    slidesPerView: 1.2,
+                    spaceBetween: 20
+                },
+                768: {
+                    slidesPerView: 2.2,
+                    spaceBetween: 30
+                },
+                1024: {
+                    slidesPerView: 3.2,
+                    spaceBetween: 40
+                }
+            }
+        });
+
+        // Форма
+        const form = document.querySelector('.contact-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Спасибо! Мы свяжемся с вами.');
+                form.reset();
+            });
+        }
+
+        // Плавный скролл
+        document.querySelectorAll('.nav a, .hero-btn').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                const href = anchor.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Изменение хедера при скролле
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Яндекс.Карта (Москва, ул. Промышленная, д.3)
+        ymaps.ready(init);
+        function init() {
+            var myMap = new ymaps.Map("map", {
+                center: [55.633363, 37.644648],
+                zoom: 14
+            });
+            
+            // Метка (Москва)
+            var moscowPlacemark = new ymaps.Placemark([55.633363, 37.644648], {
+                hintContent: 'Москва, ул. Промышленная, д.3',
+                balloonContent: 'Москва, ул. Промышленная, д.3'
+            }, {
+                preset: 'islands#goldIcon'
+            });
+            
+            myMap.geoObjects.add(moscowPlacemark);
+        }
+
+        // Эффект параллакса для hero
+        window.addEventListener('scroll', () => {
+            const heroBg = document.getElementById('heroBg');
+            if (heroBg) {
+                const scrollY = window.scrollY;
+                const maxOffset = 200;
+                const offset = Math.min(scrollY * 0.3, maxOffset);
+                heroBg.style.transform = `translateY(${offset}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
