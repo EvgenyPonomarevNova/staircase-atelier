@@ -1,27 +1,63 @@
-# Кэширование изображений
+# Включаем движок редиректов
+RewriteEngine On
+
+# БАЗОВЫЕ НАСТРОЙКИ
+Options +FollowSymLinks
+Options -Indexes
+
+# ===== КЭШИРОВАНИЕ =====
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresByType image/webp "access plus 1 year"
     ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
     ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
 </IfModule>
 
-# Сжатие
+# ===== СЖАТИЕ =====
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
+    AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# Безопасность
+# ===== РЕДИРЕКТ НА HTTPS (правильный для Джино) =====
+# Проверяем, не HTTPS ли уже
+RewriteCond %{HTTPS} off
+# Также проверяем заголовок от прокси (нужно для Джино)
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+# Не перенаправляем запросы к send.php (чтобы форма работала)
+RewriteCond %{REQUEST_URI} !^/send\.php
+# Перенаправляем все остальные страницы
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# ===== ЗАГОЛОВКИ БЕЗОПАСНОСТИ =====
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "no-referrer-when-downgrade"
+    
+    # Для кэширования
+    Header unset ETag
+    FileETag None
 </IfModule>
 
-# Редирект на HTTPS (если есть SSL)
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# ===== ЗАЩИТА ОТ ДОСТУПА К ФАЙЛАМ =====
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ===== РУССКАЯ КОДИРОВКА =====
+AddDefaultCharset UTF-8
+AddCharset utf-8 .html .css .js .php .txt .xml
+
+# ===== СВОИ СТРАНИЦЫ ОШИБОК (опционально) =====
+# ErrorDocument 404 /404.html
+# ErrorDocument 403 /403.html
